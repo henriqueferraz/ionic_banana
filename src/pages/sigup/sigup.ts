@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { TabsPage } from '../tabs/tabs';
+import { Component } from "@angular/core";
+import { IonicPage, NavController } from "ionic-angular";
+import { TabsPage } from "../tabs/tabs";
+import { LoginPage } from "./../login/login";
+import { AuthServiceProvider } from "../../providers/auth-service/auth-service";
 
 /**
  * Generated class for the SigupPage page.
@@ -11,19 +13,34 @@ import { TabsPage } from '../tabs/tabs';
 
 @IonicPage()
 @Component({
-  selector: 'page-sigup',
-  templateUrl: 'sigup.html',
+  selector: "page-sigup",
+  templateUrl: "sigup.html"
 })
 export class SigupPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+  responseData: any;
+  userData = { username: "", password: "", email: "", name: "" };
+  constructor(
+    public navCtrl: NavController,
+    public authServiceProvider: AuthServiceProvider
+  ) {}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SigupPage');
+    console.log("ionViewDidLoad SigupPage");
   }
 
-  sigup() {
-    this.navCtrl.push(TabsPage);
+  signup() {
+    // Api de coneção
+    this.authServiceProvider.postData(this.userData, "signup").then(result => {
+      this.responseData = result;
+      console.log(this.responseData);
+      localStorage.setItem('userData', JSON.stringify(this.responseData));
+      this.navCtrl.push(TabsPage);
+    }, (err) => {
+      // Menssagem de erro de coneção
+    });
+  }
+
+  login() {
+    this.navCtrl.push(LoginPage);
   }
 }
